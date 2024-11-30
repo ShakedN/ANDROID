@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             isOperationClicked = false;
         } else {
             // הוספת מספר לתצוגה
+            // comment
             result.append(buttonText);
         }
     }
