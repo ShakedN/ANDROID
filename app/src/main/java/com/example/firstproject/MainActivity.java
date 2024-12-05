@@ -16,7 +16,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
     TextView result;
-    int num1,num2;
+    int num1=0,num2=0;
+    int count;
     private String currentOperation = ""; // שמירת הפעולה הנבחרת
     private boolean isOperationClicked = false; // עוקב אם נבחרה פעולה
 
@@ -56,13 +57,49 @@ public class MainActivity extends AppCompatActivity {
     public void operationFunction(View view) {
         Button button = (Button) view;
         currentOperation = button.getText().toString();
-        num1 = Integer.parseInt(result.getText().toString());
+        try {
+            num1 = Integer.parseInt(result.getText().toString());
+        } catch (NumberFormatException e) {
+            result.setText("Error");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    clearFunction(view);
+                }
+            }, 2000);
+
+            return;
+        }
+
         isOperationClicked = true; // מאפשר להתחיל מספר חדש
     }
     public void calculateFunction(View view) {
-        num2 = Integer.parseInt(result.getText().toString());
-        int resultValue = 0;
+        if (currentOperation.isEmpty()) {
+            result.setText("Error");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    clearFunction(view);
+                }
+            }, 2000);
 
+            return;
+        }
+        try {
+            // Parse num2
+            num2 = Integer.parseInt(result.getText().toString());
+        } catch (NumberFormatException e) {
+            result.setText("Error");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    clearFunction(view);
+                }
+            }, 2000);
+
+            return;
+        }
+        int resultValue = 0;
         switch (currentOperation) {
             case "+":
                 resultValue = num1 + num2;
@@ -94,11 +131,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        }
 
+
+        }
         result.setText(String.valueOf(resultValue));
         currentOperation = ""; // איפוס הפעולה
         isOperationClicked = false;
+
+
+
     }
     public void clearFunction(View view){
         result.setText("");
