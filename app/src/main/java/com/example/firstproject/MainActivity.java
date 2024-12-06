@@ -16,10 +16,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
     TextView result;
-    int num1=0,num2=0;
+    int num1,num2;
     int count;
-    private String currentOperation = ""; // שמירת הפעולה הנבחרת
-    private boolean isOperationClicked = false; // עוקב אם נבחרה פעולה
+    private String currentOperation = "";
+    private boolean isOperationClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +44,26 @@ public class MainActivity extends AppCompatActivity {
         Button button = (Button) view;
         String buttonText = button.getText().toString();
         if (isOperationClicked) {
-            // התחלת מספר חדש לאחר פעולה
             result.setText(buttonText);
             isOperationClicked = false;
         } else {
-            // הוספת מספר לתצוגה
-            // comment
-            result.append(buttonText);
+           result.append(buttonText);
         }
     }
 
     public void operationFunction(View view) {
         Button button = (Button) view;
-        currentOperation = button.getText().toString();
+        String buttonText = button.getText().toString();
+
+        if (buttonText.equals("-") && (result.getText().toString().isEmpty() || isOperationClicked)) {
+            result.setText("-");
+            isOperationClicked = false;
+            return;
+        }
+
+
+        currentOperation = buttonText;
+
         try {
             num1 = Integer.parseInt(result.getText().toString());
         } catch (NumberFormatException e) {
@@ -67,28 +74,28 @@ public class MainActivity extends AppCompatActivity {
                     clearFunction(view);
                 }
             }, 2000);
-
             return;
         }
 
-        isOperationClicked = true; // מאפשר להתחיל מספר חדש
+        isOperationClicked = true;
     }
+
+
     public void calculateFunction(View view) {
-        if (currentOperation.isEmpty()) {
-            result.setText("Error");
+        if (result.getText().toString().isEmpty()) {
+            result.setText("Error: No input");
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     clearFunction(view);
                 }
             }, 2000);
-
             return;
         }
+
         try {
-            // Parse num2
             num2 = Integer.parseInt(result.getText().toString());
-        } catch (NumberFormatException e) {
+        }  catch (NumberFormatException e) {
             result.setText("Error");
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -96,10 +103,20 @@ public class MainActivity extends AppCompatActivity {
                     clearFunction(view);
                 }
             }, 2000);
-
+            return;
+        }
+        if (isOperationClicked) {
+            result.setText("Error: Incomplete operation");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    clearFunction(view);
+                }
+            }, 2000);
             return;
         }
         int resultValue = 0;
+
         switch (currentOperation) {
             case "+":
                 resultValue = num1 + num2;
@@ -116,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
 
 
-                        result.setText("Error");
+                    result.setText("Error");
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -128,18 +145,23 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 break;
-
-
+            default:
+                result.setText("Error: Invalid operation");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        clearFunction(view);
+                    }
+                }, 2000);
+                return;
 
 
 
         }
+
         result.setText(String.valueOf(resultValue));
         currentOperation = ""; // איפוס הפעולה
         isOperationClicked = false;
-
-
-
     }
     public void clearFunction(View view){
         result.setText("");
