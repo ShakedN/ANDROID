@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         result.setText(String.valueOf(resultValue));
-        currentOperation = ""; // איפוס הפעולה
+        currentOperation = "";
         isOperationClicked = false;
     }
     public void clearFunction(View view){
